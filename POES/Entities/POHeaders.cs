@@ -8,9 +8,9 @@ public class POHeader
 
     public required string SupplierCode { get; set; }
 
-    public DateOnly OrderDate { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+    public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
-    public DateOnly? ArrivalDate { get; set; }
+    public DateTime? ArrivalDate { get; set; }
 
     public OrderStatus OrderStatus { get; set; } = OrderStatus.OrderEntry;
 

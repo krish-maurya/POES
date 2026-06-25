@@ -8,7 +8,7 @@ public class Arrival
 
     public double ArrivedQuantity { get; set; }
 
-    public DateOnly ArrivalDate { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+    public DateTime ArrivalDate { get; set; } = DateTime.UtcNow;
 
     public POLine? Line { get; set; }
 
