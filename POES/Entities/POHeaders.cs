@@ -1,24 +1,21 @@
 namespace POES.Entities;
 
-public class PurchaseOrderHeader
+using POES.Enums;
+
+public class POHeader
 {
-    public long SeqNo { get; set; }
+    public string OrderNumber { get; set; } = string.Empty;
 
-    public string OrderNumber { get; set; }
+    public required string SupplierCode { get; set; }
 
-    public string Supplier { get; set; }
+    public DateOnly OrderDate { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
-    public DateOnly OrderDate { get; set; }
+    public DateOnly? ArrivalDate { get; set; }
 
-    public DateOnly ArrivalDate { get; set; }
+    public OrderStatus OrderStatus { get; set; } = OrderStatus.OrderEntry;
 
-    public string OrderStatus { get; set; } 
+    public Supplier? Supplier { get; set; }
 
-    public string CreatedByLogin { get; set; } 
+    public ICollection<POLine> Lines { get; set; } = new List<POLine>();
 
-    public DateOnly CreationDate { get; set; }
-
-    public string ModifiedByLogin { get; set; } 
-
-    public DateOnly ModificationDate { get; set; }
 }

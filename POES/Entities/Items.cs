@@ -2,9 +2,9 @@ using POES.Enums;
 
 namespace POES.Entities;
 
-public class Items
+public class Item
 {
-    public string Item { get; set; } = string.Empty;
+    public required string ItemCode { get; set; }
 
     public required string Description { get; set; }
 
@@ -16,7 +16,7 @@ public class Items
 
     public double NetWeight { get; set; }
 
-    public required string Supplier { get; set; }
+    public required string SupplierCode { get; set; }
 
     public double Price { get; set; }
 
@@ -26,5 +26,9 @@ public class Items
 
     public double InventoryOnOrder { get; set; }
 
-    public double InventoryAllocatedForSales { get; set; }
+    public double InventoryAllocated { get; set; }
+
+    public Supplier? Supplier { get; set; }
+
+    public ICollection<POLine> POLines { get; set; } = new List<POLine>();
 }
