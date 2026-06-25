@@ -16,7 +16,6 @@ public class Items
 
     public double NetWeight { get; set; }
 
-    public string SupplierId { get; set; } = string.Empty;
     public required string Supplier { get; set; }
 
     public double Price { get; set; }
