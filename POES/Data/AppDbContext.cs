@@ -3,7 +3,7 @@ using POES.Entities;
 
 namespace POES.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<Item> Items { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
@@ -37,6 +37,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<POHeader>(e =>
         {
             e.HasKey(x => x.OrderNumber);
+            e.Property(x => x.OrderNumber).HasMaxLength(9);
             e.HasOne(x => x.Supplier).WithMany(s => s.POHeaders)
              .HasForeignKey(x => x.SupplierCode);
         });
@@ -44,12 +45,15 @@ public class AppDbContext : DbContext
         // POLine
         modelBuilder.Entity<POLine>(e =>
         {
+            e.Property(x => x.OrderNumber).HasMaxLength(9);
             e.HasKey(x => new { x.OrderNumber, x.Position });
             e.HasIndex(x => new { x.OrderNumber, x.ItemCode }).IsUnique();
             e.HasOne(x => x.Header).WithMany(h => h.Lines)
-             .HasForeignKey(x => x.OrderNumber);
+             .HasForeignKey(x => x.OrderNumber)
+             .OnDelete(DeleteBehavior.NoAction); ;
             e.HasOne(x => x.Item).WithMany(i => i.POLines)
-             .HasForeignKey(x => x.ItemCode);
+             .HasForeignKey(x => x.ItemCode)
+             .OnDelete(DeleteBehavior.NoAction); ;
         });
 
         // Arrival
@@ -57,7 +61,8 @@ public class AppDbContext : DbContext
         {
             e.HasKey(x => new { x.OrderNumber, x.Position });
             e.HasOne(x => x.Line).WithMany(l => l.Arrivals)
-             .HasForeignKey(x => new { x.OrderNumber, x.Position });
+             .HasForeignKey(x => new { x.OrderNumber, x.Position })
+             .OnDelete(DeleteBehavior.NoAction); ;
         });
 
         // Parameter
