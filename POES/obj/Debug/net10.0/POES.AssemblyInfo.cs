@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("POES")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3d0eb862c713940e8f79c5cd39dc1e2f24048e3d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+31ef96f46efe0b0911d277e3d06847f258711720")]
 [assembly: System.Reflection.AssemblyProductAttribute("POES")]
 [assembly: System.Reflection.AssemblyTitleAttribute("POES")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
