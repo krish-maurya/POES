@@ -1,2 +1,76 @@
-./bin
-./obj
+# Build folders
+
+**/bin/
+**/obj/
+
+# Visual Studio
+
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code
+
+.vscode/
+
+# Rider
+
+.idea/
+
+# Logs
+
+*.log
+
+# NuGet
+
+packages/
+*.nupkg
+
+# Publish output
+
+publish/
+out/
+
+# Test Results
+
+TestResults/
+
+# Environment Variables
+
+.env
+.env.*
+
+# OS Generated Files
+
+.DS_Store
+Thumbs.db
+
+# Generated Cache Files
+
+*.cache
+
+# ASP.NET User Secrets
+
+secrets.json
+
+# Azure
+
+.publishsettings
+
+# Resharper
+
+_ReSharper*/
+*.DotSettings.user
+
+# Coverage Reports
+
+coverage/
+coverage.xml
+
+# SQLite Databases (remove if you want DB in Git)
+
+*.db
+*.sqlite
+*.sqlite3
