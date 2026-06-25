@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\KrishAddmission\\Internship\\POES\\POES\\POES.csproj": {}
+    "/Users/snehpatel/POES/POES/POES.csproj": {}
   },
   "projects": {
-    "D:\\KrishAddmission\\Internship\\POES\\POES\\POES.csproj": {
+    "/Users/snehpatel/POES/POES/POES.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\KrishAddmission\\Internship\\POES\\POES\\POES.csproj",
+        "projectUniqueName": "/Users/snehpatel/POES/POES/POES.csproj",
         "projectName": "POES",
-        "projectPath": "D:\\KrishAddmission\\Internship\\POES\\POES\\POES.csproj",
-        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\KrishAddmission\\Internship\\POES\\POES\\obj\\",
+        "projectPath": "/Users/snehpatel/POES/POES/POES.csproj",
+        "packagesPath": "/Users/snehpatel/.nuget/packages/",
+        "outputPath": "/Users/snehpatel/POES/POES/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/snehpatel/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -64,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.301/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
