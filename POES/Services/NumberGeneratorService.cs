@@ -2,11 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using POES.Data;
 namespace POES.Services;
 
-public class NumberGeneratorService
+public class NumberGeneratorService(AppDbContext db)
 {
-    public async Task<string> GenerateAsync(string group , AppDbContext dbContext) {
+    private readonly AppDbContext _db = db;
+
+    public async Task<string> GenerateAsync(string group ) {
         
-        var ffn = await dbContext.FirstFreeNumbers
+        var ffn = await _db.FirstFreeNumbers
             .FromSqlRaw("SELECT * FROM FirstFreeNumbers WITH (UPDLOCK) WHERE NumberGroup = {0}", group)
             .FirstOrDefaultAsync();
 
@@ -16,7 +18,7 @@ public class NumberGeneratorService
 
         ffn.FirstFreeNo++;
 
-        await dbContext.SaveChangesAsync();
+        await _db.SaveChangesAsync();
         
         return number;
     }
