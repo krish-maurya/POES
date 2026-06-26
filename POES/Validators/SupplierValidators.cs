@@ -13,13 +13,13 @@ public class SupplierCreateDtoValidator : AbstractValidator<SupplierCreateDto>
     {
         _db = db;
 
-        RuleFor(x => x.SupplierCode)
-            .Cascade(CascadeMode.Stop)
-            .NotEmpty()
-            .MaximumLength(9)
-            .Must(c => c == c.ToUpperInvariant()).WithMessage("Supplier code must be uppercase.")
-            .MustAsync(async (code, ct) => !await _db.Suppliers.AnyAsync(s => s.SupplierCode == code, ct))
-            .WithMessage("This Supplier code already exists.");
+        // RuleFor(x => x.SupplierCode)
+        //     .Cascade(CascadeMode.Stop)
+        //     .NotEmpty()
+        //     .MaximumLength(9)
+        //     .Must(c => c == c.ToUpperInvariant()).WithMessage("Supplier code must be uppercase.")
+        //     .MustAsync(async (code, ct) => !await _db.Suppliers.AnyAsync(s => s.SupplierCode == code, ct))
+        //     .WithMessage("This Supplier code already exists.");
 
         RuleFor(x => x.Description).NotEmpty().MaximumLength(30);
         RuleFor(x => x.Address).MaximumLength(30);

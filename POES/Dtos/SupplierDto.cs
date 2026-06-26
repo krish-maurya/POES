@@ -1,7 +1,7 @@
 namespace POES.DTOs;
 
 public record SupplierCreateDto(
-    string SupplierCode,
+    // string SupplierCode,
     string Description,
     string? Address,
     string? ZipCode,
