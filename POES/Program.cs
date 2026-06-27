@@ -25,12 +25,15 @@ builder.Services.AddScoped<IValidator<ItemCreateDto>, ItemCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<ItemUpdateDto>, ItemUpdateDtoValidator>();
 
 // For Supplier 
-builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<SupplierService>();
 
 builder.Services.AddScoped<IValidator<SupplierCreateDto>, SupplierCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<SupplierUpdateDto>, SupplierUpdateDtoValidator>();
 
+// For Parameter
+builder.Services.AddScoped<ParameterService>();
+builder.Services.AddScoped<IValidator<ParameterCreateDto>, ParameterCreateDtoValidator>();
+builder.Services.AddScoped<IValidator<ParameterUpdateDto>, ParameterUpdateDtoValidator>();
 var app = builder.Build();
 
 //for swagger testing only on developer local mode!!
@@ -46,5 +49,6 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => "Hello World!");
 app.MapItemEndpoints();
 app.MapSupplierEndpoints();
+app.MapParameterEndpoints();
 
 app.Run();
