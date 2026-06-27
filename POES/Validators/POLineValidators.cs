@@ -1,15 +1,8 @@
 using FluentValidation;
-<<<<<<< HEAD
 using Microsoft.EntityFrameworkCore;
 using POES.Data;
 using POES.DTOs;
 using POES.Enums;
-=======
-using POES.DTOs;
-using POES.Data;
-using POES.Enums;
-using Microsoft.EntityFrameworkCore;
->>>>>>> origin/main
 
 namespace POES.Validators;
 
@@ -27,21 +20,10 @@ public class POLineCreateValidator : AbstractValidator<POLineCreateRequest>
     {
         _db = db;
 
-<<<<<<< HEAD
-=======
-        RuleFor(x => x.Dto.OrderedQuantity)
-            .GreaterThan(0).WithMessage("Ordered quantity must be greater than zero.");
-
-        RuleFor(x => x.Dto.Price)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("Price cannot be negative.");
-
->>>>>>> origin/main
         RuleFor(x => x.Dto.ItemCode)
             .Cascade(CascadeMode.Stop)
             .NotEmpty()
             .MaximumLength(37)
-<<<<<<< HEAD
             .Must(code => code == code.ToUpperInvariant())
                 .WithMessage("Item code must be uppercase.")
             .MustAsync(async (code, ct) =>
@@ -51,31 +33,6 @@ public class POLineCreateValidator : AbstractValidator<POLineCreateRequest>
         RuleFor(x => x.Dto.OrderedQuantity)
             .GreaterThan(0)
             .WithMessage("Ordered quantity must be greater than zero.");
-=======
-            .Must(code => code == code.ToUpperInvariant()).WithMessage("Item code must be uppercase.")
-            .MustAsync(async (code, ct) => await _db.Items.AnyAsync(i => i.ItemCode == code, ct))
-            .WithMessage("Item does not exist.");
-
-        RuleFor(x => x)
-            .MustAsync(async (req, ct) =>
-                !await _db.POLines.AnyAsync(
-                    l => l.OrderNumber == req.OrderNumber && l.ItemCode == req.Dto.ItemCode, ct))
-            .WithMessage("This item already exists on this purchase order.")
-            .WithName("ItemCode");
-
-        RuleFor(x => x)
-            .MustAsync(async (req, ct) =>
-            {
-                var header = await _db.POHeaders
-                    .FirstOrDefaultAsync(h => h.OrderNumber == req.OrderNumber, ct);
-                var item = await _db.Items
-                    .FirstOrDefaultAsync(i => i.ItemCode == req.Dto.ItemCode, ct);
-                if (header is null || item is null) return true;
-                return item.SupplierCode == header.SupplierCode;
-            })
-            .WithMessage("This item does not belong to the supplier on this purchase order.")
-            .WithName("ItemCode");
->>>>>>> origin/main
 
         RuleFor(x => x.OrderNumber)
             .NotEmpty()
@@ -83,7 +40,6 @@ public class POLineCreateValidator : AbstractValidator<POLineCreateRequest>
             {
                 var header = await _db.POHeaders
                     .FirstOrDefaultAsync(h => h.OrderNumber == orderNumber, ct);
-<<<<<<< HEAD
 
                 return header != null &&
                        header.OrderStatus != OrderStatus.Delivered;
@@ -117,14 +73,6 @@ public class POLineCreateValidator : AbstractValidator<POLineCreateRequest>
             .WithName(nameof(POLineCreateDto.ItemCode));
     }
 }
-=======
-                return header != null && header.OrderStatus != OrderStatus.Delivered;
-            })
-            .WithMessage("Cannot modify a Delivered purchase order.");
-    }
-}
-
->>>>>>> origin/main
 public class POLineUpdateRequest
 {
     public string OrderNumber { get; set; } = string.Empty;
@@ -141,19 +89,12 @@ public class POLineUpdateValidator : AbstractValidator<POLineUpdateRequest>
         _db = db;
 
         RuleFor(x => x.Dto.OrderedQuantity)
-<<<<<<< HEAD
             .GreaterThan(0)
             .WithMessage("Ordered quantity must be greater than zero.");
 
         RuleFor(x => x.Dto.Price)
             .GreaterThanOrEqualTo(0)
             .WithMessage("Price cannot be negative.");
-=======
-            .GreaterThan(0).WithMessage("Ordered quantity must be greater than zero.");
-
-        RuleFor(x => x.Dto.Price)
-            .GreaterThanOrEqualTo(0).WithMessage("Price cannot be negative.");
->>>>>>> origin/main
 
         RuleFor(x => x.OrderNumber)
             .NotEmpty()
@@ -161,52 +102,32 @@ public class POLineUpdateValidator : AbstractValidator<POLineUpdateRequest>
             {
                 var header = await _db.POHeaders
                     .FirstOrDefaultAsync(h => h.OrderNumber == orderNumber, ct);
-<<<<<<< HEAD
 
                 return header != null &&
                        header.OrderStatus != OrderStatus.Delivered;
-=======
-                return header != null && header.OrderStatus != OrderStatus.Delivered;
->>>>>>> origin/main
             })
             .WithMessage("Cannot modify a line on a Delivered purchase order.");
 
         RuleFor(x => x)
             .MustAsync(async (req, ct) =>
                 await _db.POLines.AnyAsync(
-<<<<<<< HEAD
                     l => l.OrderNumber == req.OrderNumber &&
                          l.Position == req.Position,
                     ct))
             .WithMessage("Purchase order line not found.")
             .WithName(nameof(POLineUpdateRequest.Position));
-=======
-                    l => l.OrderNumber == req.OrderNumber && l.Position == req.Position, ct))
-            .WithMessage("Purchase order line not found.")
-            .WithName("Position");
->>>>>>> origin/main
 
         RuleFor(x => x)
             .MustAsync(async (req, ct) =>
             {
                 var arrivedQuantity = await _db.Arrivals
-<<<<<<< HEAD
                     .Where(a => a.OrderNumber == req.OrderNumber &&
                                 a.Position == req.Position)
-=======
-                    .Where(a => a.OrderNumber == req.OrderNumber && a.Position == req.Position)
->>>>>>> origin/main
                     .SumAsync(a => (double?)a.ArrivedQuantity, ct);
 
                 return req.Dto.OrderedQuantity >= (arrivedQuantity ?? 0);
             })
             .WithMessage("Ordered quantity cannot be less than the arrived quantity for this line.")
-<<<<<<< HEAD
             .WithName(nameof(POLineUpdateDto.OrderedQuantity));
     }
 }
-=======
-            .WithName("OrderedQuantity");
-    }
-}
->>>>>>> origin/main

@@ -3,6 +3,10 @@
 **/bin/
 **/obj/
 
+# Build configurations
+Debug/
+Release/
+
 # Visual Studio
 
 .vs/
