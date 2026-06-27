@@ -34,8 +34,12 @@ builder.Services.AddScoped<IValidator<SupplierUpdateDto>, SupplierUpdateDtoValid
 builder.Services.AddScoped<ParameterService>();
 builder.Services.AddScoped<IValidator<ParameterCreateDto>, ParameterCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<ParameterUpdateDto>, ParameterUpdateDtoValidator>();
-var app = builder.Build();
 
+// first free number
+builder.Services.AddScoped<FirstFreeNumberService>();
+builder.Services.AddScoped<IValidator<FirstFreeNumberCreateDto>, FirstFreeNumberCreateDtoValidator>();
+
+var app = builder.Build();
 //for swagger testing only on developer local mode!!
 if (app.Environment.IsDevelopment())
 {
@@ -50,5 +54,6 @@ app.MapGet("/", () => "Hello World!");
 app.MapItemEndpoints();
 app.MapSupplierEndpoints();
 app.MapParameterEndpoints();
+app.MapFirstFreeNumberEndpoints();
 
 app.Run();
