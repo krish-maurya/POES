@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 var builder = WebApplication.CreateBuilder(args);
 <<<<<<< Updated upstream
 =======
@@ -36,13 +37,73 @@ builder.Services.AddScoped<IValidator<POLineUpdateRequest>, POLineUpdateValidato
 
 >>>>>>> Stashed changes
 var app = builder.Build();
+=======
+using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using POES.Data;
+using POES.Endpoints;
+using POES.Services;
+using POES.Validators;
+using POES.DTOs;
+>>>>>>> origin/main
 
+var builder = WebApplication.CreateBuilder(args);
+
+var connString = builder.Configuration.GetConnectionString("DefaultConnectionString");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connString));
+
+// For swagger checking
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<NumberGeneratorService>();
+// For Items
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddScoped<ItemService>();
+
+builder.Services.AddScoped<IValidator<ItemCreateDto>, ItemCreateDtoValidator>();
+builder.Services.AddScoped<IValidator<ItemUpdateDto>, ItemUpdateDtoValidator>();
+
+// For Supplier 
+builder.Services.AddScoped<SupplierService>();
+
+builder.Services.AddScoped<IValidator<SupplierCreateDto>, SupplierCreateDtoValidator>();
+builder.Services.AddScoped<IValidator<SupplierUpdateDto>, SupplierUpdateDtoValidator>();
+
+// For Parameter
+builder.Services.AddScoped<ParameterService>();
+builder.Services.AddScoped<IValidator<ParameterCreateDto>, ParameterCreateDtoValidator>();
+builder.Services.AddScoped<IValidator<ParameterUpdateDto>, ParameterUpdateDtoValidator>();
+
+// first free number
+builder.Services.AddScoped<FirstFreeNumberService>();
+builder.Services.AddScoped<IValidator<FirstFreeNumberCreateDto>, FirstFreeNumberCreateDtoValidator>();
+
+var app = builder.Build();
+//for swagger testing only on developer local mode!!
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+
+
+// Main Endpoints:
 app.MapGet("/", () => "Hello World!");
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 app.MapItemEndpoints();
 app.MapSupplierEndpoints();
 app.MapPOEndpoints();
 >>>>>>> Stashed changes
+=======
+app.MapItemEndpoints();
+app.MapSupplierEndpoints();
+app.MapParameterEndpoints();
+app.MapFirstFreeNumberEndpoints();
+>>>>>>> origin/main
 
 app.Run();
