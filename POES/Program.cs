@@ -28,6 +28,7 @@ builder.Services.AddScoped<SupplierService>();
 builder.Services.AddScoped<ParameterService>();
 builder.Services.AddScoped<FirstFreeNumberService>();
 builder.Services.AddScoped<POservice>();
+builder.Services.AddScoped<IArrivalService, ArrivalService>();
 
 // Item Validators
 builder.Services.AddScoped<IValidator<ItemCreateDto>, ItemCreateDtoValidator>();
@@ -48,8 +49,13 @@ builder.Services.AddScoped<IValidator<FirstFreeNumberCreateDto>, FirstFreeNumber
 builder.Services.AddScoped<IValidator<POHeaderCreateDto>, POHeaderCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<POHeaderUpdateRequest>, POHeaderUpdateValidator>();
 
+// Purchase Line Validators
 builder.Services.AddScoped<IValidator<POLineCreateRequest>, POLineCreateValidator>();
 builder.Services.AddScoped<IValidator<POLineUpdateRequest>, POLineUpdateValidator>();
+
+// Arrival Validators
+builder.Services.AddScoped<IValidator<ArrivalCreateDto>, ArrivalCreateDtoValidator>();
+builder.Services.AddScoped<IValidator<ArrivalUpdateRequest>, ArrivalUpdateValidator>();
 
 var app = builder.Build();
 
@@ -67,5 +73,6 @@ app.MapSupplierEndpoints();
 app.MapParameterEndpoints();
 app.MapFirstFreeNumberEndpoints();
 app.MapPOEndpoints();
+app.MapArrivalEndpoints();
 
 app.Run();

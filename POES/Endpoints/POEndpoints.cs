@@ -11,7 +11,7 @@ public static class POEndpoints
 {
     public static RouteGroupBuilder MapPOEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/purchaseorders")
+        var group = app.MapGroup("/api/purchaseorders")
                        .WithTags("Purchase Orders");
 
         // Get all purchase orders
