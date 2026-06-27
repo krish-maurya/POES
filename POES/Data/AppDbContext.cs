@@ -21,7 +21,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasKey(x => x.ItemCode);
             e.Property(x => x.ItemCode).HasMaxLength(37);
             e.Property(x => x.Price).IsRequired();
-            e.HasIndex(x => new { x.SupplierCode, x.ItemCode }); // extra index for task 3c
+            e.HasIndex(x => new { x.SupplierCode, x.ItemCode }); 
             e.HasOne(x => x.Supplier).WithMany(s => s.Items)
              .HasForeignKey(x => x.SupplierCode);
         });
@@ -50,10 +50,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasIndex(x => new { x.OrderNumber, x.ItemCode }).IsUnique();
             e.HasOne(x => x.Header).WithMany(h => h.Lines)
              .HasForeignKey(x => x.OrderNumber)
-             .OnDelete(DeleteBehavior.NoAction); ;
+             .OnDelete(DeleteBehavior.NoAction);
             e.HasOne(x => x.Item).WithMany(i => i.POLines)
              .HasForeignKey(x => x.ItemCode)
-             .OnDelete(DeleteBehavior.NoAction); ;
+             .OnDelete(DeleteBehavior.NoAction);
         });
 
         // Arrival
@@ -62,7 +62,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasKey(x => new { x.OrderNumber, x.Position });
             e.HasOne(x => x.Line).WithMany(l => l.Arrivals)
              .HasForeignKey(x => new { x.OrderNumber, x.Position })
-             .OnDelete(DeleteBehavior.NoAction); ;
+             .OnDelete(DeleteBehavior.NoAction);
         });
 
         // Parameter
@@ -79,5 +79,34 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.NumberGroup).HasMaxLength(3);
             e.Property(x => x.FirstFreeNo).HasDefaultValue(1L);
         });
+
+        modelBuilder.Entity<FirstFreeNumber>().HasData(
+            new FirstFreeNumber
+            {
+                NumberGroup = "SUP",
+                Description = "Vendor",
+                FirstFreeNo = 1
+            },
+            new FirstFreeNumber
+            {
+                NumberGroup = "PO",
+                Description = "PurOrd",
+                FirstFreeNo = 1
+            }
+        );
+
+        modelBuilder.Entity<Parameter>().HasData(
+            new Parameter
+            {
+                SeqNo = 1,
+                NumberGroupSupplier = "SUP",
+                NumberGroupPurchaseOrder = "PO",
+                CreatedByLogin = "System",
+                CreationDate = new DateTime(2026, 6, 27),
+                ModifiedByLogin = string.Empty,
+                ModificationDate = null
+            }
+        );
+
     }
 }

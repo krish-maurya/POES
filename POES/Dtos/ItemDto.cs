@@ -11,10 +11,7 @@ public record ItemCreateDto(
     double NetWeight,
     string? SupplierCode,
     double Price,
-    string? ItemText,
-    double InventoryOnHand,
-    double InventoryOnOrder,
-    double InventoryAllocated
+    string? ItemText
 );
 
 public record ItemUpdateDto(
@@ -25,10 +22,7 @@ public record ItemUpdateDto(
     double NetWeight,
     string? SupplierCode,
     double Price,
-    string? ItemText,
-    double InventoryOnHand,
-    double InventoryOnOrder,
-    double InventoryAllocated
+    string? ItemText
 );
 
 public record ItemReadDto(

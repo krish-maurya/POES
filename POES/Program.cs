@@ -65,7 +65,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/", () => "Hello World!");
 
 // Endpoints
 app.MapItemEndpoints();

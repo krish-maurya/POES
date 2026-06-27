@@ -26,15 +26,13 @@ public class ItemCreateDtoValidator : AbstractValidator<ItemCreateDto>
 
         RuleFor(x => x.Description).NotEmpty().MaximumLength(30);
         RuleFor(x => x.Variety).MaximumLength(15);
+        RuleFor(x => x.Packing).IsInEnum();
 
         RuleFor(x => x.Price)
             .GreaterThan(0).WithMessage("Price is mandatory and must be greater than zero.");
 
         RuleFor(x => x.GrossWeight).GreaterThanOrEqualTo(0);
         RuleFor(x => x.NetWeight).GreaterThanOrEqualTo(0);
-        RuleFor(x => x.InventoryOnHand).GreaterThanOrEqualTo(0);
-        RuleFor(x => x.InventoryOnOrder).GreaterThanOrEqualTo(0);
-        RuleFor(x => x.InventoryAllocated).GreaterThanOrEqualTo(0);
 
         RuleFor(x => x)
             .Must(x => x.NetWeight <= x.GrossWeight)
@@ -66,12 +64,10 @@ public class ItemUpdateDtoValidator : AbstractValidator<ItemUpdateDto>
 
         RuleFor(x => x.Description).NotEmpty().MaximumLength(30);
         RuleFor(x => x.Variety).MaximumLength(15);
+        RuleFor(x => x.Packing).IsInEnum();
         RuleFor(x => x.Price).GreaterThan(0).WithMessage("Price is mandatory and must be greater than zero.");
         RuleFor(x => x.GrossWeight).GreaterThanOrEqualTo(0);
         RuleFor(x => x.NetWeight).GreaterThanOrEqualTo(0);
-        RuleFor(x => x.InventoryOnHand).GreaterThanOrEqualTo(0);
-        RuleFor(x => x.InventoryOnOrder).GreaterThanOrEqualTo(0);
-        RuleFor(x => x.InventoryAllocated).GreaterThanOrEqualTo(0);
 
         RuleFor(x => x)
             .Must(x => x.NetWeight <= x.GrossWeight)

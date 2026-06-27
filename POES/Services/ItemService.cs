@@ -38,6 +38,10 @@ public class ItemService(AppDbContext db, IMapper mapper)
 
         if (item.Packing == PackingType.No) item.NetWeight = item.GrossWeight;
 
+        item.InventoryOnHand = 0;
+        item.InventoryOnOrder = 0;
+        item.InventoryAllocated = 0;
+
         _db.Items.Add(item);
 
         await _db.SaveChangesAsync();
