@@ -8,7 +8,8 @@ public static class SupplierEndpoints
 {
     public static RouteGroupBuilder MapSupplierEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api/suppliers");
+        var group = app.MapGroup("/api/suppliers")
+                       .RequireAuthorization(policy => policy.RequireRole("Company"));
 
         group.MapGet("/", async (SupplierService service) =>
         {

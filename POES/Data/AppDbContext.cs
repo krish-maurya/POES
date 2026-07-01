@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using POES.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace POES.Data;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
     public DbSet<Item> Items { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
@@ -15,13 +16,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         // Item
         modelBuilder.Entity<Item>(e =>
         {
             e.HasKey(x => x.ItemCode);
             e.Property(x => x.ItemCode).HasMaxLength(37);
             e.Property(x => x.Price).IsRequired();
-            e.HasIndex(x => new { x.SupplierCode, x.ItemCode }); 
+            e.HasIndex(x => new { x.SupplierCode, x.ItemCode });
+
             e.HasOne(x => x.Supplier).WithMany(s => s.Items)
              .HasForeignKey(x => x.SupplierCode);
         });
@@ -107,6 +111,5 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 ModificationDate = null
             }
         );
-
     }
 }
