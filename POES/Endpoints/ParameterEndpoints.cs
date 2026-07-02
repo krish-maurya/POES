@@ -9,7 +9,7 @@ public static class ParameterEndpoints
     public static RouteGroupBuilder MapParameterEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/api/parameters")
-                       .RequireAuthorization();
+                       .RequireAuthorization(policy => policy.RequireRole("Company", "Admin"));
 
         group.MapGet("/", async (ParameterService service) =>
     {

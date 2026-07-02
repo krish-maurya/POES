@@ -1,32 +1,22 @@
-import { type InputHTMLAttributes, forwardRef } from 'react';
-import { cn } from '@/utils/cn';
+import * as React from "react";
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-  error?: string;
-}
+import { cn } from "@/lib/utils";
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, id, ...props }, ref) => (
-    <div className="space-y-1.5">
-      {label && (
-        <label htmlFor={id} className="block text-sm font-medium text-muted">
-          {label}
-        </label>
-      )}
+const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
+  ({ className, type, ...props }, ref) => {
+    return (
       <input
-        ref={ref}
-        id={id}
+        type={type}
         className={cn(
-          'w-full rounded-xl border border-border bg-surface-raised px-4 py-2.5 text-sm text-white placeholder:text-muted/60 transition focus:border-primary focus:ring-2 focus:ring-primary/20',
-          error && 'border-danger focus:border-danger focus:ring-danger/20',
+          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
           className,
         )}
+        ref={ref}
         {...props}
       />
-      {error && <p className="text-xs text-danger">{error}</p>}
-    </div>
-  ),
+    );
+  },
 );
+Input.displayName = "Input";
 
-Input.displayName = 'Input';
+export { Input };

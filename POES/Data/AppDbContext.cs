@@ -87,6 +87,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         modelBuilder.Entity<FirstFreeNumber>().HasData(
             new FirstFreeNumber
             {
+                NumberGroup = "ITM",
+                Description = "Item",
+                FirstFreeNo = 1
+            },
+            new FirstFreeNumber
+            {
                 NumberGroup = "SUP",
                 Description = "Vendor",
                 FirstFreeNo = 1

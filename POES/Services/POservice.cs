@@ -29,6 +29,16 @@ public class POservice(AppDbContext db , NumberGeneratorService numberGen)
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<POLine>> GetLinesAsync(string orderNo)
+    {
+        var header = await _db.POHeaders
+            .Include(h => h.Lines)
+                .ThenInclude(l => l.Item)
+            .FirstOrDefaultAsync(h => h.OrderNumber == orderNo);
+
+        return header?.Lines ?? [];
+    }
+
     //CREATE a new Purchase Order Header
     public async Task<POHeader> CreateHeaderAsync(POHeader header)
     {

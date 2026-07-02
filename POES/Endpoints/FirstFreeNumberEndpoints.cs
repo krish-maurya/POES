@@ -9,7 +9,7 @@ public static class FirstFreeNumberEndpoints
     public static RouteGroupBuilder MapFirstFreeNumberEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/api/firstfreenumbers")
-                       .RequireAuthorization();
+                       .RequireAuthorization(policy => policy.RequireRole("Company", "Admin"));
 
         group.MapGet("/", async (FirstFreeNumberService service) =>
     {

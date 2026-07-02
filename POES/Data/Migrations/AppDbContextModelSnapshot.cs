@@ -264,6 +264,12 @@ namespace POES.Data.Migrations
                     b.HasData(
                         new
                         {
+                            NumberGroup = "ITM",
+                            Description = "Item",
+                            FirstFreeNo = 1L
+                        },
+                        new
+                        {
                             NumberGroup = "SUP",
                             Description = "Vendor",
                             FirstFreeNo = 1L

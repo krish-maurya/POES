@@ -7,10 +7,11 @@ using POES.Enums;
 
 namespace POES.Services;
 
-public class ItemService(AppDbContext db, IMapper mapper)
+public class ItemService(AppDbContext db, IMapper mapper, NumberGeneratorService numberGenerator)
 {
     private readonly AppDbContext _db = db;
     private readonly IMapper _mapper = mapper;
+    private readonly NumberGeneratorService _numberGenerator = numberGenerator;
 
     // Get all items
     public async Task<IEnumerable<ItemReadDto>> GetAllAsync()
@@ -48,6 +49,8 @@ public class ItemService(AppDbContext db, IMapper mapper)
 
         return _mapper.Map<ItemReadDto>(item);
     }
+
+    public Task<string> GetNextCodeAsync() => _numberGenerator.GenerateAsync("ITM");
 
     // Update item
     public async Task<bool> UpdateAsync(string itemCode, ItemUpdateDto dto)

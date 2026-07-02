@@ -2,6 +2,7 @@ using FluentValidation;
 using POES.DTOs;
 using POES.Services;
 using POES.Validators;
+using System.Security.Claims;
 
 namespace POES.Endpoints;
 
@@ -10,7 +11,7 @@ public static class ArrivalEndpoints
     public static RouteGroupBuilder MapArrivalEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/api/purchaseorders/{orderNo}/lines/{position}/arrivals")
-                       .RequireAuthorization();
+                       .RequireAuthorization(policy => policy.RequireRole("Company", "Admin"));
 
         // GET the single arrival for this line (at most 1 row exists — composite PK)
         group.MapGet("/", async (string orderNo, byte position, IArrivalService service) =>

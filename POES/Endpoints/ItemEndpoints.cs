@@ -1,6 +1,7 @@
 using FluentValidation;
 using POES.DTOs;
 using POES.Services;
+using System.Security.Claims;
 
 namespace POES.Endpoints;
 
@@ -11,22 +12,47 @@ public static class ItemEndpoints
         var group = app.MapGroup("/api/items")
                        .RequireAuthorization();
 
-        group.MapGet("/", async (ItemService service) =>
+        group.MapGet("/next-code", async (ItemService service) =>
         {
+            return Results.Ok(new { itemCode = await service.GetNextCodeAsync() });
+        });
+
+        group.MapGet("/", async (ItemService service, ClaimsPrincipal user) =>
+        {
+            if (user.IsInRole("Supplier") && user.FindFirstValue("SupplierCode") is { } supplierCode)
+            {
+                return Results.Ok(await service.GetItemsBySupplierAsync(supplierCode));
+            }
+
             return Results.Ok(await service.GetAllAsync());
         });
 
-        group.MapGet("/{itemCode}", async (string itemCode, ItemService service) =>
+        group.MapGet("/{itemCode}", async (string itemCode, ItemService service, ClaimsPrincipal user) =>
         {
             var item = await service.GetByIdAsync(itemCode);
 
-            return item is null
-                ? Results.NotFound()
-                : Results.Ok(item);
+            if (item is null)
+                return Results.NotFound();
+
+            if (user.IsInRole("Supplier") && user.FindFirstValue("SupplierCode") is { } supplierCode && item.SupplierCode != supplierCode)
+                return Results.Forbid();
+
+            return Results.Ok(item);
         });
 
-        group.MapPost("/", async (ItemCreateDto dto, ItemService service, IValidator<ItemCreateDto> validator) =>
+        group.MapPost("/", async (ItemCreateDto dto, ItemService service, IValidator<ItemCreateDto> validator, ClaimsPrincipal user) =>
         {
+            if (!user.IsInRole("Supplier") && !user.IsInRole("Admin"))
+                return Results.Forbid();
+
+            if (user.IsInRole("Supplier"))
+            {
+                var supplierCode = user.FindFirstValue("SupplierCode");
+                if (string.IsNullOrWhiteSpace(supplierCode))
+                    return Results.Forbid();
+
+                dto = dto with { SupplierCode = supplierCode };
+            }
 
             var validationResult = await validator.ValidateAsync(dto);
 
@@ -42,8 +68,24 @@ public static class ItemEndpoints
                 item);
         });
 
-        group.MapPut("/{itemCode}", async (string itemCode, ItemUpdateDto dto, ItemService service, IValidator<ItemUpdateDto> validator) =>
-        {   
+        group.MapPut("/{itemCode}", async (string itemCode, ItemUpdateDto dto, ItemService service, IValidator<ItemUpdateDto> validator, ClaimsPrincipal user) =>
+        {
+            if (!user.IsInRole("Supplier") && !user.IsInRole("Admin"))
+                return Results.Forbid();
+
+            var existing = await service.GetByIdAsync(itemCode);
+            if (existing is null)
+                return Results.NotFound();
+
+            if (user.IsInRole("Supplier"))
+            {
+                var supplierCode = user.FindFirstValue("SupplierCode");
+                if (string.IsNullOrWhiteSpace(supplierCode) || existing.SupplierCode != supplierCode)
+                    return Results.Forbid();
+
+                dto = dto with { SupplierCode = supplierCode };
+            }
+
             var validationResult = await validator.ValidateAsync(dto);
 
             if (!validationResult.IsValid)
@@ -58,8 +100,22 @@ public static class ItemEndpoints
                 : Results.NotFound();
         });
 
-        group.MapDelete("/{itemCode}", async (string itemCode, ItemService service) =>
+        group.MapDelete("/{itemCode}", async (string itemCode, ItemService service, ClaimsPrincipal user) =>
         {
+            if (!user.IsInRole("Supplier") && !user.IsInRole("Admin"))
+                return Results.Forbid();
+
+            var existing = await service.GetByIdAsync(itemCode);
+            if (existing is null)
+                return Results.NotFound();
+
+            if (user.IsInRole("Supplier"))
+            {
+                var supplierCode = user.FindFirstValue("SupplierCode");
+                if (string.IsNullOrWhiteSpace(supplierCode) || existing.SupplierCode != supplierCode)
+                    return Results.Forbid();
+            }
+
             bool deleted = await service.DeleteAsync(itemCode);
 
             return deleted
@@ -67,8 +123,11 @@ public static class ItemEndpoints
                 : Results.NotFound();
         });
 
-        group.MapGet("/by-supplier/{supplierCode}", async (string supplierCode, ItemService service) =>
+        group.MapGet("/by-supplier/{supplierCode}", async (string supplierCode, ItemService service, ClaimsPrincipal user) =>
         {
+            if (user.IsInRole("Supplier") && user.FindFirstValue("SupplierCode") is { } ownSupplierCode && ownSupplierCode != supplierCode)
+                return Results.Forbid();
+
             return Results.Ok(
                 await service.GetItemsBySupplierAsync(supplierCode));
         });

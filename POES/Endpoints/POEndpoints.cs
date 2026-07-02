@@ -4,6 +4,7 @@ using POES.DTOs;
 using POES.Entities;
 using POES.Services;
 using POES.Validators;
+using System.Security.Claims;
 
 namespace POES.Endpoints;
 
@@ -20,6 +21,9 @@ public static class POEndpoints
 
         // Get one purchase order
         group.MapGet("/{orderNo}", GetById);
+
+        // Get lines for a purchase order
+        group.MapGet("/{orderNo}/lines", GetLines);
 
         // Create purchase order
         group.MapPost("/", Create);
@@ -45,9 +49,15 @@ public static class POEndpoints
 
     static async Task<IResult> GetAll(
         POservice service,
-        IMapper mapper)
+        IMapper mapper,
+        ClaimsPrincipal user)
     {
         var headers = await service.GetAllHeadersAsync();
+
+        if (user.IsInRole("Supplier") && user.FindFirstValue("SupplierCode") is { } supplierCode)
+        {
+            headers = headers.Where(h => h.SupplierCode == supplierCode).ToList();
+        }
 
         return Results.Ok(
             mapper.Map<IEnumerable<POHeaderReadDto>>(headers));
@@ -56,23 +66,50 @@ public static class POEndpoints
     static async Task<IResult> GetById(
         string orderNo,
         POservice service,
-        IMapper mapper)
+        IMapper mapper,
+        ClaimsPrincipal user)
     {
         var header = await service.GetHeaderAsync(orderNo);
 
         if (header is null)
             return Results.NotFound();
 
+        if (user.IsInRole("Supplier") && user.FindFirstValue("SupplierCode") is { } supplierCode && header.SupplierCode != supplierCode)
+            return Results.Forbid();
+
         return Results.Ok(
             mapper.Map<POHeaderReadDto>(header));
+    }
+
+    static async Task<IResult> GetLines(
+        string orderNo,
+        POservice service,
+        IMapper mapper,
+        ClaimsPrincipal user)
+    {
+        var header = await service.GetHeaderAsync(orderNo);
+
+        if (header is null)
+            return Results.NotFound();
+
+        if (user.IsInRole("Supplier") && user.FindFirstValue("SupplierCode") is { } supplierCode && header.SupplierCode != supplierCode)
+            return Results.Forbid();
+
+        var lines = await service.GetLinesAsync(orderNo);
+
+        return Results.Ok(mapper.Map<IEnumerable<POLineReadDto>>(lines));
     }
 
     static async Task<IResult> Create(
     POHeaderCreateDto dto,
     POservice service,
     IMapper mapper,
-    IValidator<POHeaderCreateDto> validator)
+    IValidator<POHeaderCreateDto> validator,
+    ClaimsPrincipal user)
     {
+        if (!user.IsInRole("Company") && !user.IsInRole("Admin"))
+            return Results.Forbid();
+
         var validation = await validator.ValidateAsync(dto);
 
         if (!validation.IsValid)
@@ -92,8 +129,12 @@ public static class POEndpoints
     POHeaderUpdateDto dto,
     POservice service,
     IMapper mapper,
-    IValidator<POHeaderUpdateRequest> validator)
+    IValidator<POHeaderUpdateRequest> validator,
+    ClaimsPrincipal user)
     {
+        if (!user.IsInRole("Company") && !user.IsInRole("Admin"))
+            return Results.Forbid();
+
         var request = new POHeaderUpdateRequest
         {
             OrderNumber = orderNo,
@@ -120,8 +161,12 @@ public static class POEndpoints
     POLineCreateDto dto,
     POservice service,
     IMapper mapper,
-    IValidator<POLineCreateRequest> validator)
+    IValidator<POLineCreateRequest> validator,
+    ClaimsPrincipal user)
     {
+        if (!user.IsInRole("Company") && !user.IsInRole("Admin"))
+            return Results.Forbid();
+
         var request = new POLineCreateRequest
         {
             OrderNumber = orderNo,
@@ -148,8 +193,12 @@ public static class POEndpoints
     POLineUpdateDto dto,
     POservice service,
     IMapper mapper,
-    IValidator<POLineUpdateRequest> validator)
+    IValidator<POLineUpdateRequest> validator,
+    ClaimsPrincipal user)
     {
+        if (!user.IsInRole("Company") && !user.IsInRole("Admin"))
+            return Results.Forbid();
+
         var request = new POLineUpdateRequest
         {
             OrderNumber = orderNo,
@@ -175,17 +224,30 @@ public static class POEndpoints
     static async Task<IResult> DeleteLine(
         string orderNo,
         byte position,
-        POservice service)
+        POservice service,
+        ClaimsPrincipal user)
     {
+        if (!user.IsInRole("Company") && !user.IsInRole("Admin"))
+            return Results.Forbid();
+
         await service.DeleteLineAsync(orderNo, position);
 
         return Results.NoContent();
     }
 
     static async Task<IResult> GetTotal(
-    string orderNo,
-    POservice service)
+        string orderNo,
+        POservice service,
+        ClaimsPrincipal user)
     {
+        var header = await service.GetHeaderAsync(orderNo);
+
+        if (header is null)
+            return Results.NotFound();
+
+        if (user.IsInRole("Supplier") && user.FindFirstValue("SupplierCode") is { } supplierCode && header.SupplierCode != supplierCode)
+            return Results.Forbid();
+
         var total = await service.GetTotalOrderAmountAsync(orderNo);
 
         return Results.Ok(total);

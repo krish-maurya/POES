@@ -52,7 +52,7 @@ public static class AuthEndpoints
         {
             var user = await userManager.FindByEmailAsync(dto.Email);
             if (user is null || !await userManager.CheckPasswordAsync(user, dto.Password))
-                return Results.Unauthorized();
+                return Results.Json(new { error = "Invalid email or password." }, statusCode: StatusCodes.Status401Unauthorized);
 
             var roles = await userManager.GetRolesAsync(user);
 
